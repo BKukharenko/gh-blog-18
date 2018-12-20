@@ -65,6 +65,7 @@ class Post
 
     public function __construct()
     {
+        $this->isPublished = true;
         $this->comments = new ArrayCollection();
     }
 
