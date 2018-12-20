@@ -18,7 +18,7 @@ class PostController extends AbstractController
     {
       $post = new Post();
 
-      $form = $this->createForm(PostType::class);
+      $form = $this->createForm(PostType::class, $post);
       $form->handleRequest($request);
 
       if ($form->isSubmitted() && $form->isValid()) {
@@ -37,12 +37,12 @@ class PostController extends AbstractController
     }
 
   /**
-   * @Route("/post/{id}", name="show_post", requirements={"page"="\d+"})
+   * @Route("/post/{id}", name="show-post", requirements={"page"="\d+"})
    * @ParamConverter("post", class="App\Entity\Post")
    */
   public function showPost(Post $post) {
 
-    return $this->render('post/show.html.twig', [
+    return $this->render('post/show.htm.twig', [
       'post' => $post,
       'category' => $post->getCategory(),
     ]);
