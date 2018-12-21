@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Post;
 use App\Form\PostType;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,6 +46,22 @@ class PostController extends AbstractController
     return $this->render('post/show.htm.twig', [
       'post' => $post,
       'category' => $post->getCategory(),
+    ]);
+    }
+
+  /**
+   * @Route("/list", name="list-posts")
+   */
+  public function listPosts(Request $request, PaginatorInterface $paginator) {
+    $postRepositiry = $this->getDoctrine()->getRepository(Post::class);
+    $query = $postRepositiry->findPublishedQuery();
+
+    $pagination = $paginator->paginate(
+      $query, $request->query->getInt('page', 1), 10
+    );
+
+    return $this->render('post/list.html.twig', [
+      'pagination' => $pagination,
     ]);
     }
 }
