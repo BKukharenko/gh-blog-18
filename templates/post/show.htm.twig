@@ -8,5 +8,15 @@
         <p>Content: {{ post.body }}</p>
         <h3>Category: {{ category.name }}</h3>
         <h4>Published at: {{ post.createdAt | date("Y-m-d") }}</h4>
+        <h4>Add Comments:</h4>
+        {{ render(controller('App\\Controller\\PostController::commentForm', {'id': post.id})) }}
+        <h4>Comments: </h4>
+        {% for comment in post.comments %}
+            <p>
+                {{ comment.message }}
+                {{ comment.publishedAt | date("Y-m-d") }}
+            </p>
+        {% endfor %}
+
     </div>
 {% endblock %}

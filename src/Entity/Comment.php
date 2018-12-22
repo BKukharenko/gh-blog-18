@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
@@ -32,6 +33,7 @@ class Comment
     /**
      * @ORM\Column(type="datetime")
      * @Constraints\DateTime()
+     * @Gedmo\Timestampable(on="create")
      */
     private $publishedAt;
 

@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Post;
+use App\Form\CommentType;
 use App\Form\PostType;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends AbstractController
@@ -64,4 +67,40 @@ class PostController extends AbstractController
       'pagination' => $pagination,
     ]);
     }
+
+  /**
+   * @Route("/comment/{id}/new", methods={"POST"}, name="create-comment")
+   * @ParamConverter("id", class="App\Entity\Post")
+   */
+  public function createComment (Request $request, Post $post): Response {
+    $comment = new Comment();
+    $post->addComment($comment);
+
+    $form = $this->createForm(CommentType::class, $comment);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+      $em = $this->getDoctrine()->getManager();
+      $em->persist($comment);
+      $em->flush();
+
+      return $this->redirectToRoute('show-post', [
+        'id' => $post->getId()]);
+    }
+
+    return $this->render('comment/create.htm.twig', [
+      'comment_form' => $form->createView(),
+      'title' => 'Add New Comment',
+    ]);
+
+    }
+
+  public function commentForm(Post $post): Response
+  {
+    $form = $this->createForm(CommentType::class);
+    return $this->render('comment/create.htm.twig', [
+      'post' => $post,
+      'comment_form' => $form->createView(),
+    ]);
+  }
 }
