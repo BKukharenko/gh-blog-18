@@ -48,7 +48,7 @@ class PostController extends AbstractController
      */
     public function showPost(Post $post)
     {
-        return $this->render('post/show.htm.twig', [
+        return $this->render('post/show.html.twig', [
           'post' => $post,
           'category' => $post->getCategory(),
         ]);
@@ -96,7 +96,7 @@ class PostController extends AbstractController
               'id' => $post->getId(), ]);
             }
 
-        return $this->render('comment/create.htm.twig', [
+        return $this->render('comment/create.html.twig', [
           'comment_form' => $form->createView(),
           'title' => 'Add New Comment',
         ]);
@@ -106,7 +106,7 @@ class PostController extends AbstractController
     {
         $form = $this->createForm(CommentType::class);
 
-        return $this->render('comment/create.htm.twig', [
+        return $this->render('comment/create.html.twig', [
           'post' => $post,
           'comment_form' => $form->createView(),
         ]);
