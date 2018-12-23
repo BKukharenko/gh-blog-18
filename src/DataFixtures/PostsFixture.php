@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -18,6 +19,12 @@ class PostsFixture extends Fixture {
       $post->setTitle($title);
       $post->setBody($content);
       $post->setCategory(...$category);
+
+      foreach (range(1, 3) as $i) {
+        $comment = new Comment();
+        $comment->setMessage($this->getRandomComment(random_int(255, 512)));
+        $post->addComment($comment);
+      }
 
       $manager->persist($post);
     }
@@ -106,5 +113,27 @@ class PostsFixture extends Fixture {
       ];
     }
     return $posts;
+  }
+
+  private function getComment(): array
+  {
+    return [
+      'Non quam lacus suspendisse faucibus interdum posuere lorem.',
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      'Fermentum dui faucibus in ornare quam viverra orci sagittis eu.',
+      'Convallis posuere morbi leo urna molestie. Netus et malesuada fames ac turpis.',
+      'Consectetur purus ut faucibus pulvinar elementum integer.',
+    ];
+  }
+
+  private function getRandomComment(int $maxLength = 255): string
+  {
+    $comments = $this->getComment();
+    shuffle($comments);
+    while (mb_strlen($text = implode('. ', $comments).'.') > $maxLength) {
+      array_pop($comments);
+    }
+    return $text;
   }
 }
