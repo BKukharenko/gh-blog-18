@@ -22,7 +22,7 @@ class PostType extends AbstractType
             ->add('category', EntityType::class, [
               'class' => Category::class,
               'choice_label' => 'name',
-              'multiple' => false
+              'multiple' => false,
             ])
           ->add('Create Post', SubmitType::class)
         ;
@@ -32,7 +32,7 @@ class PostType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Post::class,
-            'method' => 'POST'
+            'method' => 'POST',
         ]);
     }
 }

@@ -24,13 +24,12 @@ class PostRepository extends ServiceEntityRepository
     //  * @return Post[] Returns an array of Post objects
     //  */
 
-    public function findPublishedQuery() : Query
+    public function findPublishedQuery(): Query
     {
         return $this->createQueryBuilder('p')
             ->where('p.isPublished = :isPublished')
-            ->setParameter('isPublished', TRUE)
+            ->setParameter('isPublished', true)
             ->getQuery()
         ;
     }
-
 }
