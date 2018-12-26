@@ -75,14 +75,14 @@ class PostController extends AbstractController
     }
 
   /**
-   * @Route("/category/{name}", name="posts-by-category")
+   * @Route("/category/{slug}", name="posts-by-category")
    * @ParamConverter("category", class="App\Entity\Category")
    */
   public function listPostsByCategory(Request $request, PaginatorInterface $paginator, Category $cat)
   {
 
     $postRepository = $this->getDoctrine()->getRepository(Post::class);
-    $query = $postRepository->findByCategoryQuery($cat->getName());
+    $query = $postRepository->findByCategoryQuery($cat->getSlug());
 
     $pagination = $paginator->paginate(
       $query, $request->query->getInt('page', 1), 10
