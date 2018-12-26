@@ -7,6 +7,11 @@
         <h1>Title: {{ post.title }}</h1>
         <p>Content: {{ post.body }}</p>
         <h3>Category: <a href="{{ path('posts-by-category', {slug: category.slug}) }}">{{ category.name }}</a></h3>
+        <h3>Tags:
+            {% for tag in tags %}
+                {{ tag.name }}
+            {% endfor %}
+        </h3>
         <h4>Published at: {{ post.createdAt | date("Y-m-d") }}</h4>
         <h4>Add Comments:</h4>
         {{ render(controller('App\\Controller\\PostController::commentForm', {'id': post.id})) }}

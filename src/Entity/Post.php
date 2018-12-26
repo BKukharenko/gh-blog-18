@@ -64,7 +64,7 @@ class Post
     private $comments;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", mappedBy="posts")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag")
      */
     private $tags;
 

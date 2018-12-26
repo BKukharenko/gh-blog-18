@@ -52,6 +52,7 @@ class PostController extends AbstractController
         return $this->render('post/show.html.twig', [
           'post' => $post,
           'category' => $post->getCategory(),
+          'tags' => $post->getTags(),
         ]);
     }
 
