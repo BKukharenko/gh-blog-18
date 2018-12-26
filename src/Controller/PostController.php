@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Comment;
 use App\Entity\Post;
 use App\Form\CommentType;
@@ -61,8 +62,8 @@ class PostController extends AbstractController
      */
     public function listPosts(Request $request, PaginatorInterface $paginator)
     {
-        $postRepositiry = $this->getDoctrine()->getRepository(Post::class);
-        $query = $postRepositiry->findPublishedQuery();
+        $postRepository = $this->getDoctrine()->getRepository(Post::class);
+        $query = $postRepository->findPublishedQuery();
 
         $pagination = $paginator->paginate(
         $query, $request->query->getInt('page', 1), 10
@@ -72,6 +73,25 @@ class PostController extends AbstractController
           'pagination' => $pagination,
         ]);
     }
+
+  /**
+   * @Route("/category/{name}", name="posts-by-category")
+   * @ParamConverter("category", class="App\Entity\Category")
+   */
+  public function listPostsByCategory(Request $request, PaginatorInterface $paginator, Category $cat)
+  {
+
+    $postRepository = $this->getDoctrine()->getRepository(Post::class);
+    $query = $postRepository->findByCategoryQuery($cat->getName());
+
+    $pagination = $paginator->paginate(
+      $query, $request->query->getInt('page', 1), 10
+    );
+
+    return $this->render('post/by-category.html.twig', [
+      'pagination' => $pagination,
+    ]);
+  }
 
     /**
      * @Route("/comment/{id}/new", methods={"POST"}, name="create-comment")

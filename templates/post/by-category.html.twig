@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <ul class="posts">
+            {% for post in pagination %}
+                <li class="post">
+                    <a href="{{ path('show-post', {id: post.id}) }}">{{ post.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}
