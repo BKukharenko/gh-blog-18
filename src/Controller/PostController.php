@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Entity\Tag;
 use App\Form\CommentType;
 use App\Form\PostType;
 use Knp\Component\Pager\PaginatorInterface;
@@ -90,6 +91,25 @@ class PostController extends AbstractController
     );
 
     return $this->render('post/by-category.html.twig', [
+      'pagination' => $pagination,
+    ]);
+  }
+
+  /**
+   * @Route("/tag/{slug}", name="posts-by-tag")
+   * @ParamConverter("tag", class="App\Entity\Tag")
+   */
+  public function listPostsByTag(Request $request, PaginatorInterface $paginator, Tag $tag)
+  {
+
+    $postRepository = $this->getDoctrine()->getRepository(Post::class);
+    $query = $postRepository->findByTagQuery($tag->getSlug());
+
+    $pagination = $paginator->paginate(
+      $query, $request->query->getInt('page', 1), 10
+    );
+
+    return $this->render('post/by-tag.html.twig', [
       'pagination' => $pagination,
     ]);
   }
