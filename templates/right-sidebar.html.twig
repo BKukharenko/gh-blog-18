@@ -1,0 +1,28 @@
+
+
+<h3>Categories</h3>
+<ul class="categories-list">
+    {% if categories %}
+        {% for category in categories %}
+            <li>
+                <a href="{{ path('posts-by-category', {'slug': category.slug}) }}">
+                    <i class="icon-plus-sign"></i>{{ category.name }}
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
+</ul>
+
+
+<h3>Tags</h3>
+<ul class="tags-list">
+    {% if tags %}
+        {% for tag in tags %}
+            <li>
+                <a href="{{ path('posts-by-tag', {'slug': tag.slug}) }}">
+                    <i class="icon-plus-sign"></i>{{ tag.name }}
+                </a>
+            </li>
+        {% endfor %}
+    {% endif %}
+</ul>
