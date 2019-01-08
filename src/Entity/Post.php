@@ -68,11 +68,18 @@ class Post
      */
     private $tags;
 
-    public function __construct()
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
+
+    public function __construct(User $author)
     {
         $this->isPublished = true;
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->author = $author;
     }
 
     public function getId(): ?int
@@ -207,6 +214,18 @@ class Post
             $this->tags->removeElement($tag);
             $tag->removePost($this);
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }
