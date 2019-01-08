@@ -13,7 +13,11 @@ class MenuBuilder implements ContainerAwareInterface {
 
   public function mainMenu(FactoryInterface $factory) {
 
-    $menu = $factory->createItem('root');
+    $menu = $factory->createItem('root', array(
+      'childrenAttributes'    => array(
+        'class'             => 'd-flex justify-content-between py-5',
+      ),
+    ));
 
     $menu->addChild('Home', ['route' => 'homepage']);
     $menu->addChild('Blog', ['route' => 'list-posts']);
