@@ -76,10 +76,10 @@ class PostsFixture extends Fixture implements DependentFixtureInterface
         return $postContent[$randKey];
     }
 
-    private function loadPosts(ObjectManager $manager)
+    public function loadPosts(ObjectManager $manager)
     {
         foreach ($this->getPostData() as [$title, $content, $category, $tags]) {
-            $post = new Post();
+            $post = new Post($this->getReference('admin'));
             $post->setTitle($title);
             $post->setBody($content);
             $post->setCategory(...$category);
@@ -89,6 +89,7 @@ class PostsFixture extends Fixture implements DependentFixtureInterface
                 $comment = new Comment();
                 $comment->setMessage($this->getRandomComment(random_int(255, 512)));
                 $post->addComment($comment);
+                $comment->setAuthor($this->getReference('user'));
             }
 
             $manager->persist($post);

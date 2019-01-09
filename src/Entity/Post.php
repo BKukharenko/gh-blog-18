@@ -74,12 +74,11 @@ class Post
      */
     private $author;
 
-    public function __construct(User $author)
+    public function __construct()
     {
         $this->isPublished = true;
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
-        $this->author = $author;
     }
 
     public function getId(): ?int
