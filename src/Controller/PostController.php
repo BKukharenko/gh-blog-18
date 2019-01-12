@@ -123,6 +123,9 @@ class PostController extends AbstractController
      */
     public function createComment(Request $request, Post $post): Response
     {
+
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $comment = new Comment();
         $post->addComment($comment);
 
