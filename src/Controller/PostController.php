@@ -23,6 +23,7 @@ class PostController extends AbstractController
      */
     public function createPost(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $post = new Post();
         $post->setAuthor($this->getUser());
 
@@ -128,6 +129,7 @@ class PostController extends AbstractController
 
         $comment = new Comment();
         $post->addComment($comment);
+        $comment->setAuthor($this->getUser());
 
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);

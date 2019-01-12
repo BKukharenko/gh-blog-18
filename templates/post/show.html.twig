@@ -14,8 +14,10 @@
             {% endfor %}
         </h3>
         <h4>Published at: {{ post.createdAt | date("Y-m-d") }}</h4>
-        <h4>Add Comments:</h4>
-        {{ render(controller('App\\Controller\\PostController::commentForm', {'id': post.id})) }}
+        {% if is_granted('ROLE_USER') %}
+            <h4>Add Comments:</h4>
+            {{ render(controller('App\\Controller\\PostController::commentForm', {'id': post.id})) }}
+        {% endif %}
         <h4>Comments: </h4>
         <ul class="post-comments" style="list-style: none">
             {% for comment in post.comments %}

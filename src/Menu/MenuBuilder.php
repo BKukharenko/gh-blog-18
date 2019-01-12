@@ -30,8 +30,10 @@ class MenuBuilder implements ContainerAwareInterface {
 
     $menu->addChild('Home', ['route' => 'homepage']);
     $menu->addChild('Blog', ['route' => 'list-posts']);
-    $menu->addChild('Create Post', ['route' => 'create-post']);
 
+    if ($this->checker->isGranted('ROLE_ADMIN')) {
+      $menu->addChild('Create Post', ['route' => 'create-post']);
+    }
     if (!$this->checker->isGranted('IS_AUTHENTICATED_FULLY')) {
       $menu->addChild('Login', ['route' => 'app_login']);
     } else {
