@@ -99,6 +99,13 @@ class PostsFixture extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
+    public function getDependencies()
+    {
+        return [
+          TagsFixture::class,
+        ];
+    }
+
     private function getRandomCategory(): array
     {
         $categories = new CategoriesFixture();
@@ -111,23 +118,23 @@ class PostsFixture extends Fixture implements DependentFixtureInterface
         }, $chosenCategory);
     }
 
-  private function getRandomTag(): array
-  {
-    $tags = new TagsFixture();
-    $tagNames = $tags->getTags();
-    shuffle($tagNames);
-    $chosenTag = \array_slice($tagNames, 0, random_int(2, 4));
+    private function getRandomTag(): array
+    {
+        $tags = new TagsFixture();
+        $tagNames = $tags->getTags();
+        shuffle($tagNames);
+        $chosenTag = \array_slice($tagNames, 0, random_int(2, 4));
 
-    return array_map(function ($tagName) {
-      return $this->getReference('tag-' . $tagName);
-    }, $chosenTag);
-  }
+        return array_map(function ($tagName) {
+            return $this->getReference('tag-' . $tagName);
+        }, $chosenTag);
+    }
 
     private function getPostData()
     {
         $posts = [];
         foreach ($this->getPostTitle() as $i => $title) {
-          $posts[] = [
+            $posts[] = [
             $title,
             $this->getPostContent(),
             $this->getRandomCategory(),
@@ -155,16 +162,9 @@ class PostsFixture extends Fixture implements DependentFixtureInterface
         $comments = $this->getComment();
         shuffle($comments);
         while (mb_strlen($text = implode('. ', $comments) . '.') > $maxLength) {
-          array_pop($comments);
+            array_pop($comments);
         }
 
         return $text;
     }
-
-  public function getDependencies()
-  {
-    return array(
-      TagsFixture::class,
-    );
-  }
 }

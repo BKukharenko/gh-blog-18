@@ -33,8 +33,9 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
-  public function findByCategoryQuery($slug): Query {
-      return $this->createQueryBuilder('p')
+    public function findByCategoryQuery($slug): Query
+    {
+        return $this->createQueryBuilder('p')
         ->add('select', 'p')
         ->leftJoin('p.category', 'c')
         ->where('c.name LIKE :category')
@@ -43,13 +44,14 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
 
-  public function findByTagQuery($slug): Query {
-    return $this->createQueryBuilder('p')
+    public function findByTagQuery($slug): Query
+    {
+        return $this->createQueryBuilder('p')
       ->add('select', 'p')
       ->leftJoin('p.tags', 't')
       ->where('t.name LIKE :tag')
       ->setParameter('tag', $slug)
       ->getQuery()
       ;
-  }
+    }
 }

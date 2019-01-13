@@ -28,7 +28,7 @@ class PostType extends AbstractType
             ->add('tags', EntityType::class, [
               'class' => Tag::class,
               'choice_label' => 'name',
-              'multiple' => true
+              'multiple' => true,
             ])
           ->add('Create Post', SubmitType::class)
         ;

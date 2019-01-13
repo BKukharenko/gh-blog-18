@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Constraints;
 
 /**
@@ -55,11 +55,12 @@ class User implements UserInterface
      */
     private $plainPassword;
 
-    public function __construct() {
-      $this->roles = ['ROLE_USER'];
+    public function __construct()
+    {
+        $this->roles = ['ROLE_USER'];
     }
 
-  public function getId(): ?int
+    public function getId(): ?int
     {
         return $this->id;
     }

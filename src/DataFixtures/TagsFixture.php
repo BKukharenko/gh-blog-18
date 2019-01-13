@@ -10,14 +10,12 @@ class TagsFixture extends Fixture
 {
     public function load(ObjectManager $manager)
     {
-
-      $this->loadTags($manager);
-
+        $this->loadTags($manager);
     }
 
-  public function getTags(): array
-  {
-    return [
+    public function getTags(): array
+    {
+        return [
       'Dog',
       'Cat',
       'Elephant',
@@ -47,17 +45,17 @@ class TagsFixture extends Fixture
       'Ruby',
       'Backend',
     ];
-  }
-
-  private function loadTags(ObjectManager $manager)
-  {
-    foreach ($this->getTags() as $index => $name) {
-      $tag = new Tag();
-      $tag->setName($name);
-      $manager->persist($tag);
-      $this->addReference('tag-' . $name, $tag);
     }
 
-    $manager->flush();
-  }
+    private function loadTags(ObjectManager $manager)
+    {
+        foreach ($this->getTags() as $index => $name) {
+            $tag = new Tag();
+            $tag->setName($name);
+            $manager->persist($tag);
+            $this->addReference('tag-' . $name, $tag);
+        }
+
+        $manager->flush();
+    }
 }
