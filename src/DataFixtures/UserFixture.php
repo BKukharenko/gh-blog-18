@@ -25,7 +25,7 @@ class UserFixture extends Fixture
       $user->setEmail('user@test.com');
       $user->setFullName('John Doe');
       $user->setRoles(['ROLE_USER']);
-      $user->setPassword($this->passwordEncoder->encodePassword($user, 'qwerty'));
+      $user->setPassword($this->passwordEncoder->encodePassword($user, '128769'));
       $manager->persist($user);
       $this->setReference('user', $user);
 
@@ -33,7 +33,7 @@ class UserFixture extends Fixture
       $admin->setEmail('admin@test.com');
       $admin->setFullName('Admin');
       $admin->setRoles(['ROLE_ADMIN']);
-      $admin->setPassword($this->passwordEncoder->encodePassword($admin, 'qwerty123456'));
+      $admin->setPassword($this->passwordEncoder->encodePassword($admin, '128769'));
       $manager->persist($admin);
       $this->setReference('admin', $admin);
 

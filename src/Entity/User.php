@@ -48,7 +48,18 @@ class User implements UserInterface
      */
     private $slug;
 
-    public function getId(): ?int
+    /**
+     * @ORM\Column(type="string", length=255)
+     * @Constraints\NotBlank()
+     * @Constraints\Length(min="6")
+     */
+    private $plainPassword;
+
+    public function __construct() {
+      $this->roles = ['ROLE_USER'];
+    }
+
+  public function getId(): ?int
     {
         return $this->id;
     }
@@ -146,6 +157,18 @@ class User implements UserInterface
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }

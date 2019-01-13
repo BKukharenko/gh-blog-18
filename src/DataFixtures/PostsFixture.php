@@ -79,7 +79,8 @@ class PostsFixture extends Fixture implements DependentFixtureInterface
     public function loadPosts(ObjectManager $manager)
     {
         foreach ($this->getPostData() as [$title, $content, $category, $tags]) {
-            $post = new Post($this->getReference('admin'));
+            $post = new Post();
+            $post->setAuthor($this->getReference('admin'));
             $post->setTitle($title);
             $post->setBody($content);
             $post->setCategory(...$category);

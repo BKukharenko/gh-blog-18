@@ -36,6 +36,7 @@ class MenuBuilder implements ContainerAwareInterface {
     }
     if (!$this->checker->isGranted('IS_AUTHENTICATED_FULLY')) {
       $menu->addChild('Login', ['route' => 'app_login']);
+      $menu->addChild('Register', ['route' => 'app_register']);
     } else {
       $menu->addChild('Logout', ['route' => 'app_logout']);
     }
