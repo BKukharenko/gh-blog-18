@@ -6,17 +6,28 @@
     <div class="container">
         <h1>Title: {{ post.title }}</h1>
         <p>Content: {{ post.body }}</p>
-        <h3>Category: {{ category.name }}</h3>
+        <h3>Author: {{ post.author.fullName }}</h3>
+        <h3>Category: <a href="{{ path('posts-by-category', {slug: category.slug}) }}">{{ category.name }}</a></h3>
+        <h3>Tags:
+            {% for tag in tags %}
+                <a href="{{ path('posts-by-tag', {slug: tag.slug}) }}">{{ tag.name }}</a>
+            {% endfor %}
+        </h3>
         <h4>Published at: {{ post.createdAt | date("Y-m-d") }}</h4>
-        <h4>Add Comments:</h4>
-        {{ render(controller('App\\Controller\\PostController::commentForm', {'id': post.id})) }}
+        {% if is_granted('ROLE_USER') %}
+            <h4>Add Comments:</h4>
+            {{ render(controller('App\\Controller\\PostController::commentForm', {'id': post.id})) }}
+        {% endif %}
         <h4>Comments: </h4>
-        {% for comment in post.comments %}
-            <p>
-                {{ comment.message }}
-                {{ comment.publishedAt | date("Y-m-d") }}
-            </p>
-        {% endfor %}
+        <ul class="post-comments" style="list-style: none">
+            {% for comment in post.comments %}
+                <li class="post-comment" style="margin-bottom: 20px">
+                    <p style="margin-bottom: 10px">{{ comment.message }}</p>
+                    <span>{{ comment.author.fullName }}</span>
+                    <span>{{ comment.publishedAt | date("Y-m-d") }}</span>
+                </li>
+            {% endfor %}
+        </ul>
 
     </div>
 {% endblock %}

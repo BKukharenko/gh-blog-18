@@ -5,9 +5,10 @@ namespace App\DataFixtures;
 use App\Entity\Comment;
 use App\Entity\Post;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class PostsFixture extends Fixture
+class PostsFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
@@ -75,24 +76,34 @@ class PostsFixture extends Fixture
         return $postContent[$randKey];
     }
 
-    private function loadPosts(ObjectManager $manager)
+    public function loadPosts(ObjectManager $manager)
     {
-        foreach ($this->getPostData() as [$title, $content, $category]) {
+        foreach ($this->getPostData() as [$title, $content, $category, $tags]) {
             $post = new Post();
+            $post->setAuthor($this->getReference('admin'));
             $post->setTitle($title);
             $post->setBody($content);
             $post->setCategory(...$category);
+            $post->addTag(...$tags);
 
             foreach (range(1, 3) as $i) {
                 $comment = new Comment();
                 $comment->setMessage($this->getRandomComment(random_int(255, 512)));
                 $post->addComment($comment);
+                $comment->setAuthor($this->getReference('user'));
             }
 
             $manager->persist($post);
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+          TagsFixture::class,
+        ];
     }
 
     private function getRandomCategory(): array
@@ -107,14 +118,27 @@ class PostsFixture extends Fixture
         }, $chosenCategory);
     }
 
+    private function getRandomTag(): array
+    {
+        $tags = new TagsFixture();
+        $tagNames = $tags->getTags();
+        shuffle($tagNames);
+        $chosenTag = \array_slice($tagNames, 0, random_int(2, 4));
+
+        return array_map(function ($tagName) {
+            return $this->getReference('tag-' . $tagName);
+        }, $chosenTag);
+    }
+
     private function getPostData()
     {
         $posts = [];
         foreach ($this->getPostTitle() as $i => $title) {
-          $posts[] = [
+            $posts[] = [
             $title,
             $this->getPostContent(),
             $this->getRandomCategory(),
+            $this->getRandomTag(),
           ];
         }
 
@@ -138,7 +162,7 @@ class PostsFixture extends Fixture
         $comments = $this->getComment();
         shuffle($comments);
         while (mb_strlen($text = implode('. ', $comments) . '.') > $maxLength) {
-          array_pop($comments);
+            array_pop($comments);
         }
 
         return $text;

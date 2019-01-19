@@ -25,7 +25,6 @@ class CategoriesFixture extends Fixture
         ];
     }
 
-
     private function loadCategories(ObjectManager $manager)
     {
         foreach ($this->getCategories() as $index => $name) {
@@ -37,5 +36,4 @@ class CategoriesFixture extends Fixture
 
         $manager->flush();
     }
-
 }

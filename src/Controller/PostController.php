@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Category;
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Entity\Tag;
 use App\Form\CommentType;
 use App\Form\PostType;
 use Knp\Component\Pager\PaginatorInterface;
@@ -21,7 +23,9 @@ class PostController extends AbstractController
      */
     public function createPost(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $post = new Post();
+        $post->setAuthor($this->getUser());
 
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
@@ -51,7 +55,36 @@ class PostController extends AbstractController
         return $this->render('post/show.html.twig', [
           'post' => $post,
           'category' => $post->getCategory(),
+          'tags' => $post->getTags(),
         ]);
+    }
+
+    /**
+     * @Route("post/edit/{id}", name="post-edit", methods={"GET", "POST"})
+     * @param Request $request
+     * @param Post $post
+     */
+    public function editPost(Request $request, Post $post): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
+        if ($post->getAuthor() !== $this->getUser()) {
+            return $this->redirectToRoute('homepage');
+        }
+
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('show-post', ['id' => $post->getId()]);
+        }
+
+        return $this->render('post/edit.html.twig', [
+          'post' => $post,
+          'form' => $form->createView(),
+    ]);
     }
 
     /**
@@ -61,8 +94,8 @@ class PostController extends AbstractController
      */
     public function listPosts(Request $request, PaginatorInterface $paginator)
     {
-        $postRepositiry = $this->getDoctrine()->getRepository(Post::class);
-        $query = $postRepositiry->findPublishedQuery();
+        $postRepository = $this->getDoctrine()->getRepository(Post::class);
+        $query = $postRepository->findPublishedQuery();
 
         $pagination = $paginator->paginate(
         $query, $request->query->getInt('page', 1), 10
@@ -74,6 +107,48 @@ class PostController extends AbstractController
     }
 
     /**
+     * @Route("/category/{slug}", name="posts-by-category")
+     * @ParamConverter("category", class="App\Entity\Category")
+     * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @param Category $cat
+     */
+    public function listPostsByCategory(Request $request, PaginatorInterface $paginator, Category $cat)
+    {
+        $postRepository = $this->getDoctrine()->getRepository(Post::class);
+        $query = $postRepository->findByCategoryQuery($cat->getSlug());
+
+        $pagination = $paginator->paginate(
+        $query, $request->query->getInt('page', 1), 10
+    );
+
+        return $this->render('post/by-category.html.twig', [
+          'pagination' => $pagination,
+    ]);
+    }
+
+    /**
+     * @Route("/tag/{slug}", name="posts-by-tag")
+     * @ParamConverter("tag", class="App\Entity\Tag")
+     * @param Request $request
+     * @param PaginatorInterface $paginator
+     * @param Tag $tag
+     */
+    public function listPostsByTag(Request $request, PaginatorInterface $paginator, Tag $tag)
+    {
+        $postRepository = $this->getDoctrine()->getRepository(Post::class);
+        $query = $postRepository->findByTagQuery($tag->getSlug());
+
+        $pagination = $paginator->paginate(
+        $query, $request->query->getInt('page', 1), 10
+    );
+
+        return $this->render('post/by-tag.html.twig', [
+          'pagination' => $pagination,
+    ]);
+    }
+
+    /**
      * @Route("/comment/{id}/new", methods={"POST"}, name="create-comment")
      * @ParamConverter("id", class="App\Entity\Post")
      * @param Request $request
@@ -81,8 +156,11 @@ class PostController extends AbstractController
      */
     public function createComment(Request $request, Post $post): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $comment = new Comment();
         $post->addComment($comment);
+        $comment->setAuthor($this->getUser());
 
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
@@ -94,7 +172,7 @@ class PostController extends AbstractController
 
             return $this->redirectToRoute('show-post', [
               'id' => $post->getId(), ]);
-            }
+        }
 
         return $this->render('comment/create.html.twig', [
           'comment_form' => $form->createView(),
