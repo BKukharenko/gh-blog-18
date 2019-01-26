@@ -14,16 +14,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class PostController extends AbstractController
 {
     /**
      * @Route("/create-post", name="create-post")
+     * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      */
     public function createPost(Request $request)
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $post = new Post();
         $post->setAuthor($this->getUser());
 
@@ -61,12 +62,12 @@ class PostController extends AbstractController
 
     /**
      * @Route("post/edit/{id}", name="post-edit", methods={"GET", "POST"})
+     * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @param Post $post
      */
     public function editPost(Request $request, Post $post): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         if ($post->getAuthor() !== $this->getUser()) {
             return $this->redirectToRoute('homepage');
@@ -151,12 +152,12 @@ class PostController extends AbstractController
     /**
      * @Route("/comment/{id}/new", methods={"POST"}, name="create-comment")
      * @ParamConverter("id", class="App\Entity\Post")
+     * @IsGranted("ROLE_USER")
      * @param Request $request
      * @param Post $post
      */
     public function createComment(Request $request, Post $post): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
 
         $comment = new Comment();
         $post->addComment($comment);
