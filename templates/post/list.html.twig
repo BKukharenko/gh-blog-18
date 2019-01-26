@@ -2,6 +2,12 @@
 
 {% block body %}
     <div class="container">
+        <div class="search mb-5">
+            <form action="{{ path('post-search') }}">
+                <input minlength="2" name="q" placeholder="Search posts" size="16" type="text">
+                <button class="btn" type="submit"><i class="icon-search"></i>Search</button>
+            </form>
+        </div>
         <ul class="posts">
         {% for post in pagination %}
             <li class="post">

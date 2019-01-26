@@ -8,6 +8,7 @@ use App\Entity\Post;
 use App\Entity\Tag;
 use App\Form\CommentType;
 use App\Form\PostType;
+use App\Repository\PostRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -148,6 +149,21 @@ class PostController extends AbstractController
           'pagination' => $pagination,
     ]);
     }
+
+  /**
+   * @Route("list/search", methods={"GET"}, name="post-search")
+   */
+  public function search(Request $request, PostRepository $postRepository, PaginatorInterface $paginator): Response
+  {
+    $query = $postRepository->findBySearchQuery($request->query->get('q'));
+    if (!$query) {
+      throw $this->createNotFoundException('The post doesn\'t exist');
+    }
+    $posts = $paginator->paginate($query, $request->query->getInt('page', 1));
+    return $this->render('post/search.html.twig', [
+      'posts' => $posts,
+    ]);
+  }
 
     /**
      * @Route("/comment/{id}/new", methods={"POST"}, name="create-comment")
