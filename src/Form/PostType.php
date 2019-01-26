@@ -19,7 +19,9 @@ class PostType extends AbstractType
     {
         $builder
             ->add('title', TextType::class)
-            ->add('body', TextareaType::class)
+            ->add('body', TextareaType::class, [
+              'attr' => ['class' => 'ckeditor']
+            ])
             ->add('category', EntityType::class, [
               'class' => Category::class,
               'choice_label' => 'name',

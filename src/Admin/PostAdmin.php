@@ -26,7 +26,9 @@ class PostAdmin extends AbstractAdmin {
   protected function configureFormFields(FormMapper $formMapper) {
     $formMapper
       ->add('title', TextType::class)
-      ->add('body', TextareaType::class)
+      ->add('body', TextareaType::class, [
+        'attr' => ['class' => 'ckeditor'],
+      ])
       ->end()
       ->add('category', ModelType::class, [
         'class' => Category::class,
