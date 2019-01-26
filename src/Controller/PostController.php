@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
 
 class PostController extends AbstractController
 {
@@ -52,8 +53,15 @@ class PostController extends AbstractController
      * @ParamConverter("post", class="App\Entity\Post")
      * @param Post $post
      */
-    public function showPost(Post $post)
+    public function showPost(Post $post, Breadcrumbs $breadcrumbs)
     {
+      $breadcrumbs->prependRouteItem('Home', 'homepage');
+      $breadcrumbs->addRouteItem($post->getCategory()->getName(), 'posts-by-category', [
+        'slug' => $post->getCategory()->getSlug(),
+      ]);
+      $breadcrumbs->addRouteItem($post->getTitle(), 'show-post', [
+        'id' => $post->getId()
+      ]);
         return $this->render('post/show.html.twig', [
           'post' => $post,
           'category' => $post->getCategory(),

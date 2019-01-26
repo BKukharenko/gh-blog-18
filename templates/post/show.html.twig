@@ -4,6 +4,7 @@
 
 {% block body %}
     <div class="container">
+        {{ wo_render_breadcrumbs() }}
         <h1>Title: {{ post.title }}</h1>
         <p>Content: {{ post.body }}</p>
         <h3>Author: {{ post.author.fullName }}</h3>
