@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bohdan
- * Date: 19.01.19
- * Time: 16:43
- */
 
 namespace App\Admin;
-
 
 use App\Entity\Category;
 use App\Entity\Post;
@@ -21,44 +14,48 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class PostAdmin extends AbstractAdmin {
+class PostAdmin extends AbstractAdmin
+{
+    public function toString($object)
+    {
+        return $object instanceof Post
+          ? $object->getTitle()
+          : 'Post';
+    }
 
-  protected function configureFormFields(FormMapper $formMapper) {
-    $formMapper
-      ->add('title', TextType::class)
-      ->add('body', TextareaType::class, [
-        'attr' => ['class' => 'ckeditor'],
-      ])
-      ->end()
-      ->add('category', ModelType::class, [
-        'class' => Category::class,
-        'property' => 'name',
-      ])
-      ->add('author', EntityType::class, [
-        'class' => User::class,
-        'choice_label' => 'fullname',
-      ])
-      ->end();
-  }
+    protected function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper
+          ->add('title', TextType::class)
+          ->add('body', TextareaType::class, [
+              'attr' => ['class' => 'ckeditor'],
+          ])
+          ->end()
+          ->add('category', ModelType::class, [
+              'class' => Category::class,
+              'property' => 'name',
+          ])
+          ->add('author', EntityType::class, [
+              'class' => User::class,
+              'choice_label' => 'fullname',
+          ])
+          ->end();
+    }
 
-  protected function configureDatagridFilters(DatagridMapper $datagridMapper) {
-    $datagridMapper
-      ->add('title')
-      ->add('category', NULL, [], EntityType::class, [
-        'class' => Category::class,
-        'choice_label' => 'name',
-      ]);
-  }
+    protected function configureDatagridFilters(DatagridMapper $datagridMapper)
+    {
+        $datagridMapper
+          ->add('title')
+          ->add('category', null, [], EntityType::class, [
+              'class' => Category::class,
+              'choice_label' => 'name',
+          ]);
+    }
 
-  protected function configureListFields(ListMapper $listMapper) {
-    $listMapper
-      ->addIdentifier('title')
-      ->add('isPublished');
-  }
-
-  public function toString($object) {
-    return $object instanceof Post
-      ? $object->getTitle()
-      : 'Post';
-  }
+    protected function configureListFields(ListMapper $listMapper)
+    {
+        $listMapper
+          ->addIdentifier('title')
+          ->add('isPublished');
+    }
 }
