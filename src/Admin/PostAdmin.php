@@ -4,11 +4,13 @@ namespace App\Admin;
 
 use App\Entity\Category;
 use App\Entity\Post;
+use App\Entity\Tag;
 use App\Entity\User;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Form\Type\ModelAutocompleteType;
 use Sonata\AdminBundle\Form\Type\ModelType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -35,6 +37,12 @@ class PostAdmin extends AbstractAdmin
               'class' => Category::class,
               'property' => 'name',
           ])
+          ->end()
+          ->add('tags', ModelAutocompleteType::class, [
+            'property' => 'name',
+            'multiple' => true,
+          ])
+          ->end()
           ->add('author', EntityType::class, [
               'class' => User::class,
               'choice_label' => 'fullname',

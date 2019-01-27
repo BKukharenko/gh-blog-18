@@ -42,6 +42,12 @@ services:
         tags:
             - { name: sonata.admin, manager_type: orm, label: Category}
 
+    admin.tags:
+        class: App\Admin\TagsAdmin
+        arguments: [~, App\Entity\Tag, ~]
+        tags:
+           - { name: sonata.admin, manager_type: orm, label: Tags}
+
     admin.post:
         class: App\Admin\PostAdmin
         arguments: [~, App\Entity\Post, ~]
