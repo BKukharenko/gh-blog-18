@@ -4,7 +4,6 @@ namespace App\Admin;
 
 use App\Entity\Category;
 use App\Entity\Post;
-use App\Entity\Tag;
 use App\Entity\User;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -39,8 +38,8 @@ class PostAdmin extends AbstractAdmin
           ])
           ->end()
           ->add('tags', ModelAutocompleteType::class, [
-            'property' => 'name',
-            'multiple' => true,
+              'property' => 'name',
+              'multiple' => true,
           ])
           ->end()
           ->add('author', EntityType::class, [

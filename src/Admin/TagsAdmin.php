@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Admin;
-
 
 use App\Entity\Tag;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
@@ -11,28 +9,27 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class TagsAdmin extends AbstractAdmin {
+class TagsAdmin extends AbstractAdmin
+{
+    public function toString($object)
+    {
+        return $object instanceof Tag
+          ? $object->getName()
+          : 'Tag';
+    }
 
-  public function toString($object)
-  {
-    return $object instanceof Tag
-      ? $object->getName()
-      : 'Tag';
-  }
+    protected function configureFormFields(FormMapper $formMapper)
+    {
+        $formMapper->add('name', TextType::class);
+    }
 
-  protected function configureFormFields(FormMapper $formMapper)
-  {
-    $formMapper->add('name', TextType::class);
-  }
+    protected function configureDatagridFilters(DatagridMapper $datagridMapper)
+    {
+        $datagridMapper->add('name');
+    }
 
-  protected function configureDatagridFilters(DatagridMapper $datagridMapper)
-  {
-    $datagridMapper->add('name');
-  }
-
-  protected function configureListFields(ListMapper $listMapper)
-  {
-    $listMapper->addIdentifier('name');
-  }
-
+    protected function configureListFields(ListMapper $listMapper)
+    {
+        $listMapper->addIdentifier('name');
+    }
 }
