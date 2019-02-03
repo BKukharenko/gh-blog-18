@@ -54,4 +54,42 @@ class PostRepository extends ServiceEntityRepository
       ->getQuery()
       ;
     }
+
+    public function findBySearchQuery(string $rawQuery)
+    {
+        $query = $this->sanitizeSearchQuery($rawQuery);
+        $searchTerms = $this->extractSearchTerms($query);
+
+        if (0 === \count($searchTerms)) {
+            return [];
+        }
+
+        $queryBuilder = $this->createQueryBuilder('p');
+        foreach ($searchTerms as $key => $term) {
+            $queryBuilder
+              ->orWhere('p.title LIKE :t_' . $key)
+              ->setParameter('t_' . $key, '%' . $term . '%')
+        ;
+        }
+
+        return $queryBuilder
+        ->orderBy('p.createdAt', 'DESC')
+        ->setMaxResults(10)
+        ->getQuery()
+        ->getResult();
+    }
+
+    private function sanitizeSearchQuery(string $query): string
+    {
+        return trim(preg_replace('/[[:space:]]+/', ' ', $query));
+    }
+
+    private function extractSearchTerms(string $searchQuery): array
+    {
+        $terms = array_unique(explode(' ', $searchQuery));
+
+        return array_filter($terms, function ($term) {
+            return 2 <= mb_strlen($term);
+        });
+    }
 }

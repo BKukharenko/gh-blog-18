@@ -35,3 +35,29 @@ services:
         factory: ["@app.menu_builder", mainMenu]
         tags:
             - { name: knp_menu.menu, alias: mainMenu }
+
+    admin.category:
+        class: App\Admin\CategoryAdmin
+        arguments: [~, App\Entity\Category, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Category}
+
+    admin.tags:
+        class: App\Admin\TagsAdmin
+        arguments: [~, App\Entity\Tag, ~]
+        tags:
+           - { name: sonata.admin, manager_type: orm, label: Tags}
+
+    admin.post:
+        class: App\Admin\PostAdmin
+        arguments: [~, App\Entity\Post, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: Post}
+
+    admin.user:
+        class: App\Admin\UserAdmin
+        arguments: [~, App\Entity\User, ~]
+        tags:
+            - { name: sonata.admin, manager_type: orm, label: User}
+
+

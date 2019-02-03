@@ -18,4 +18,11 @@ return [
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
     Knp\Bundle\MenuBundle\KnpMenuBundle::class => ['all' => true],
+    Sonata\DatagridBundle\SonataDatagridBundle::class => ['all' => true],
+    Sonata\CoreBundle\SonataCoreBundle::class => ['all' => true],
+    Sonata\BlockBundle\SonataBlockBundle::class => ['all' => true],
+    Sonata\AdminBundle\SonataAdminBundle::class => ['all' => true],
+    Sonata\DoctrineORMAdminBundle\SonataDoctrineORMAdminBundle::class => ['all' => true],
+    FOS\CKEditorBundle\FOSCKEditorBundle::class => ['all' => true],
+    WhiteOctober\BreadcrumbsBundle\WhiteOctoberBreadcrumbsBundle::class => ['all' => true],
 ];

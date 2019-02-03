@@ -8,22 +8,25 @@ use App\Entity\Post;
 use App\Entity\Tag;
 use App\Form\CommentType;
 use App\Form\PostType;
+use App\Repository\PostRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use WhiteOctober\BreadcrumbsBundle\Model\Breadcrumbs;
 
 class PostController extends AbstractController
 {
     /**
      * @Route("/create-post", name="create-post")
+     * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      */
     public function createPost(Request $request)
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $post = new Post();
         $post->setAuthor($this->getUser());
 
@@ -49,9 +52,18 @@ class PostController extends AbstractController
      * @Route("/post/{id}", name="show-post", requirements={"page" = "\d+"})
      * @ParamConverter("post", class="App\Entity\Post")
      * @param Post $post
+     * @param Breadcrumbs $breadcrumbs
      */
-    public function showPost(Post $post)
+    public function showPost(Post $post, Breadcrumbs $breadcrumbs)
     {
+        $breadcrumbs->prependRouteItem('Home', 'homepage');
+        $breadcrumbs->addRouteItem($post->getCategory()->getName(), 'posts-by-category', [
+        'slug' => $post->getCategory()->getSlug(),
+      ]);
+        $breadcrumbs->addRouteItem($post->getTitle(), 'show-post', [
+        'id' => $post->getId(),
+      ]);
+
         return $this->render('post/show.html.twig', [
           'post' => $post,
           'category' => $post->getCategory(),
@@ -61,13 +73,12 @@ class PostController extends AbstractController
 
     /**
      * @Route("post/edit/{id}", name="post-edit", methods={"GET", "POST"})
+     * @IsGranted("ROLE_ADMIN")
      * @param Request $request
      * @param Post $post
      */
     public function editPost(Request $request, Post $post): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         if ($post->getAuthor() !== $this->getUser()) {
             return $this->redirectToRoute('homepage');
         }
@@ -149,15 +160,33 @@ class PostController extends AbstractController
     }
 
     /**
+     * @Route("list/search", methods={"GET"}, name="post-search")
+     * @param Request $request
+     * @param PostRepository $postRepository
+     * @param PaginatorInterface $paginator
+     */
+    public function search(Request $request, PostRepository $postRepository, PaginatorInterface $paginator): Response
+    {
+        $query = $postRepository->findBySearchQuery($request->query->get('q'));
+        if (!$query) {
+            throw $this->createNotFoundException('The post doesn\'t exist');
+        }
+        $posts = $paginator->paginate($query, $request->query->getInt('page', 1));
+
+        return $this->render('post/search.html.twig', [
+      'posts' => $posts,
+    ]);
+    }
+
+    /**
      * @Route("/comment/{id}/new", methods={"POST"}, name="create-comment")
      * @ParamConverter("id", class="App\Entity\Post")
+     * @IsGranted("ROLE_USER")
      * @param Request $request
      * @param Post $post
      */
     public function createComment(Request $request, Post $post): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         $comment = new Comment();
         $post->addComment($comment);
         $comment->setAuthor($this->getUser());
