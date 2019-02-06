@@ -49,7 +49,6 @@ class User implements UserInterface
     private $slug;
 
     /**
-     * @ORM\Column(type="string", length=255)
      * @Constraints\NotBlank()
      * @Constraints\Length(min="6")
      */

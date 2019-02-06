@@ -42,6 +42,15 @@ class Tag
         $this->posts = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        if ($this->name === null) {
+            return 'NULL';
+        }
+
+        return $this->name;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -96,9 +105,4 @@ class Tag
 
         return $this;
     }
-
-  public function __toString(): string
-  {
-      return $this->name;
-  }
 }
