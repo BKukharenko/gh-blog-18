@@ -33,3 +33,6 @@ framework:
 
     templating:
         engines: ['twig']
+
+    serializer:
+        enabled: true

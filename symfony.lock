@@ -110,6 +110,15 @@
             "ref": "8eb1cd0962ded6a6d6e1e5a9b6d3e888f9f94ff6"
         }
     },
+    "friendsofsymfony/rest-bundle": {
+        "version": "2.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.2",
+            "ref": "258300d52be6ad59b32a888d5ddafbf9638540ff"
+        }
+    },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.36"
     },
@@ -511,6 +520,12 @@
     },
     "whiteoctober/breadcrumbs-bundle": {
         "version": "1.4.3"
+    },
+    "willdurand/jsonp-callback-validator": {
+        "version": "v1.1.0"
+    },
+    "willdurand/negotiation": {
+        "version": "v2.3.1"
     },
     "zendframework/zend-code": {
         "version": "3.3.1"
