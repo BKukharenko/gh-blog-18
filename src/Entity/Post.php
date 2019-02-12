@@ -74,11 +74,18 @@ class Post
      */
     private $author;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Like", mappedBy="post", orphanRemoval=true, cascade={"persist"})
+     * @Constraints\NotNull()
+     */
+    private $likes;
+
     public function __construct()
     {
         $this->isPublished = true;
         $this->comments = new ArrayCollection();
         $this->tags = new ArrayCollection();
+        $this->likes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -225,6 +232,30 @@ class Post
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Like[]
+     */
+    public function getLikes(): Collection
+    {
+        return $this->likes;
+    }
+
+    public function addLike(?Like $like): void
+    {
+        $like->setPost($this);
+        if (!$this->likes->contains($like)) {
+            $this->likes->add($like);
+        }
+    }
+
+    public function removeLike(Like $like): self
+    {
+        $like->setPost(null);
+        $this->likes->removeElement($like);
 
         return $this;
     }

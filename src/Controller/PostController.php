@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Comment;
+use App\Entity\Like;
 use App\Entity\Post;
 use App\Entity\Tag;
 use App\Form\CommentType;
@@ -53,9 +54,13 @@ class PostController extends AbstractController
      * @ParamConverter("post", class="App\Entity\Post")
      * @param Post $post
      * @param Breadcrumbs $breadcrumbs
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function showPost(Post $post, Breadcrumbs $breadcrumbs)
     {
+        $em = $this->getDoctrine()->getManager();
+        $likeCount = $em->getRepository(Like::class)->getLikeCountForPost($post->getId());
         $breadcrumbs->prependRouteItem('Home', 'homepage');
         $breadcrumbs->addRouteItem($post->getCategory()->getName(), 'posts-by-category', [
         'slug' => $post->getCategory()->getSlug(),
@@ -68,6 +73,7 @@ class PostController extends AbstractController
           'post' => $post,
           'category' => $post->getCategory(),
           'tags' => $post->getTags(),
+          'likeCount' => $likeCount,
         ]);
     }
 
@@ -217,5 +223,51 @@ class PostController extends AbstractController
           'post' => $post,
           'comment_form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @param \App\Entity\Post $post
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @isGranted("ROLE_USER")
+     * @Route("/post/like/{id}", name="post-like")
+     */
+    public function like(Post $post): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $likes = $post->getLikes();
+
+        if ($likes->isEmpty()) {
+            $like = new Like();
+            $like->setUser($this->getUser());
+            $post->addLike($like);
+
+            $em->persist($post);
+        } else {
+            $isDeleted = false;
+
+            foreach ($likes as $like) {
+                if ($like->getUser() === $this->getUser()) {
+                    $post->removeLike($like);
+
+                    $em->persist($post);
+
+                    $isDeleted = true;
+                }
+            }
+
+            if (!$isDeleted) {
+                $like = new Like();
+                $like->setUser($this->getUser());
+                $post->addLike($like);
+
+                $em->persist($post);
+            }
+        }
+
+        $em->flush();
+
+        return $this->redirectToRoute('show-post', ['id' => $post->getId()]);
     }
 }
